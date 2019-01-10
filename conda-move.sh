@@ -30,6 +30,13 @@ else
 	bash Miniconda3-latest-Linux-x86_64.sh -b -f -p "${NEW_DIR}"
 fi
 
+# In particular, $DOT_CONDA_DIR/environments.txt causes "CondaValueError: prefix already exists: /fast/users/whitewtj_c/scratch/miniconda/envs/blah"
+DOT_CONDA_DIR=$HOME/.conda
+if [ -d "$DOT_CONDA_DIR" ]; then
+	echo "Found existing $DOT_CONDA_DIR, will rename this to $DOT_CONDA_DIR.bak.  Remove it after checking that everything works."
+	mv "$DOT_CONDA_DIR" "$DOT_CONDA_DIR.bak"
+fi
+
 export PATH=$NEW_DIR/bin:$PATH
 
 echo "Step 2) export explicit package lists for all environments in old conda installation ($OLD_DIR)"

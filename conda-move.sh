@@ -50,7 +50,7 @@ echo "Step 1) install miniconda to target dir ($NEW_DIR)"
 if [ -d "$NEW_DIR" ]; then
 	echo "Found existing conda installation in $NEW_DIR, skipping conda installation."
 else
-	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o Miniconda3-latest-Linux-x86_64.sh
+	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh
 	bash Miniconda3-latest-Linux-x86_64.sh -b -f -p "${NEW_DIR}"
 
         if [ ! -d "$NEW_DIR" ]
@@ -68,6 +68,13 @@ else
 	# No need to export PATH as it's already flagged as an exported variable.
 	PATH="$NEW_DIR/bin:$PATH"
 	PATH_UPDATE_NEEDED=1
+fi
+
+# In particular, $DOT_CONDA_DIR/environments.txt causes "CondaValueError: prefix already exists: /fast/users/whitewtj_c/scratch/miniconda/envs/blah"
+DOT_CONDA_DIR=$HOME/.conda
+if [ -d "$DOT_CONDA_DIR" ]; then
+	echo "Found existing $DOT_CONDA_DIR, will rename this to $DOT_CONDA_DIR.bak.  Remove it after checking that everything works."
+	mv "$DOT_CONDA_DIR" "$DOT_CONDA_DIR.bak"
 fi
 
 echo "Step 2) export explicit package lists for all environments in old conda installation ($OLD_DIR)"
